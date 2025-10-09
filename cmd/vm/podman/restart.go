@@ -13,5 +13,5 @@ var RestartMachineCmd = &cobra.Command{
 }
 
 func runRestartMachine(cmd *cobra.Command, args []string) error {
-	return podmansrc.RestartMachine(binaryName, machineName)
+	return podmansrc.RestartMachine(machineName)
 }

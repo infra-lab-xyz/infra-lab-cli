@@ -2,12 +2,15 @@ package minikube
 
 import (
 	"fmt"
+	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
-func deleteCluster(binaryName, clusterName string) (err error) {
+func deleteCluster(clusterName string) (err error) {
+	cfg := config.GetConfig()
+
 	_, _, err = utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Minikube.Binary,
 		fmt.Sprintf("-p %s delete", clusterName),
 		true,
 		false,
@@ -20,20 +23,22 @@ func deleteCluster(binaryName, clusterName string) (err error) {
 	return nil
 }
 
-func DeleteCluster(binaryName string, cluster Cluster) (err error) {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func DeleteCluster(cluster Cluster) (err error) {
+	cfg := config.GetConfig()
+
+	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil
 	}
 
-	clusters, err := getClusters(binaryName)
+	clusters, err := getClusters()
 	if err != nil {
 		return err
 	}
 
 	existingCluster := getClusterIfExists(cluster, clusters)
 	if existingCluster != nil {
-		err = deleteCluster(binaryName, cluster.Name)
+		err = deleteCluster(cluster.Name)
 		if err != nil {
 			return err
 		}

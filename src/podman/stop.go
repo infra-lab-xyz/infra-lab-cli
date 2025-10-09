@@ -2,17 +2,20 @@ package podman
 
 import (
 	"fmt"
+	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
-func StopMachine(binaryName, machineName string) (err error) {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func StopMachine(machineName string) (err error) {
+	cfg := config.GetConfig()
+
+	if !utils.IsBinaryInPath(cfg.Apps.Podman.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Podman.Binary))
 		return nil
 	}
 
 	_, _, err = utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Podman.Binary,
 		fmt.Sprintf("machine stop %s", machineName),
 		true,
 		false,

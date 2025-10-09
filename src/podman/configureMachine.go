@@ -2,18 +2,21 @@ package podman
 
 import (
 	"fmt"
+	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 	"strconv"
 )
 
-func ConfigureMachine(binaryName, machineName string, params ConfigParams) error {
+func ConfigureMachine(machineName string, params ConfigParams) error {
+	cfg := config.GetConfig()
+
 	// TODO: is it wise to move this check to a function, or this action would not help with code duplication?
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+	if !utils.IsBinaryInPath(cfg.Apps.Podman.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Podman.Binary))
 		return nil
 	}
 
-	machine, err := InspectMachine(binaryName, machineName)
+	machine, err := InspectMachine(machineName)
 	if err != nil {
 		return err
 	}
@@ -31,7 +34,7 @@ func ConfigureMachine(binaryName, machineName string, params ConfigParams) error
 
 	isRunning := machine.State == "running"
 	if isRunning {
-		err := StopMachine(binaryName, machineName)
+		err := StopMachine(machineName)
 		if err != nil {
 			return err
 		}
@@ -39,7 +42,7 @@ func ConfigureMachine(binaryName, machineName string, params ConfigParams) error
 
 	if params.CPUs.IsChanged {
 		_, _, err := utils.ExecBinaryCommand(
-			binaryName,
+			cfg.Apps.Podman.Binary,
 			fmt.Sprintf("machine set --cpus %s %s", strconv.Itoa(params.CPUs.Value), machineName),
 			false,
 			false,
@@ -54,7 +57,7 @@ func ConfigureMachine(binaryName, machineName string, params ConfigParams) error
 
 	if params.Memory.IsChanged {
 		_, _, err := utils.ExecBinaryCommand(
-			binaryName,
+			cfg.Apps.Podman.Binary,
 			fmt.Sprintf("machine set --memory %s %s", strconv.Itoa(params.Memory.Value), machineName),
 			false,
 			false,
@@ -69,7 +72,7 @@ func ConfigureMachine(binaryName, machineName string, params ConfigParams) error
 	if params.DiskSize.IsChanged {
 		if params.DiskSize.Value > machine.Resources.DiskSize {
 			_, _, err := utils.ExecBinaryCommand(
-				binaryName,
+				cfg.Apps.Podman.Binary,
 				fmt.Sprintf("machine set --disk-size %s %s", strconv.Itoa(params.DiskSize.Value), machineName),
 				false,
 				false,
@@ -85,7 +88,7 @@ func ConfigureMachine(binaryName, machineName string, params ConfigParams) error
 	}
 
 	if isRunning {
-		err = StartMachine(binaryName, machineName)
+		err = StartMachine(machineName)
 		if err != nil {
 			return err
 		}

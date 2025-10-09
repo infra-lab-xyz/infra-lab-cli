@@ -3,15 +3,18 @@ package minikube
 import (
 	"encoding/json"
 	"fmt"
+	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 	"strings"
 )
 
 // TODO: these functions look very similar and duplicated
 
-func GetSupportedKubeVersions(binaryName string) (versions []string, err error) {
+func GetSupportedKubeVersions() (versions []string, err error) {
+	cfg := config.GetConfig()
+
 	stdout, _, err := utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Minikube.Binary,
 		"config defaults kubernetes-version -o json",
 		false,
 		false,
@@ -31,8 +34,9 @@ func GetSupportedKubeVersions(binaryName string) (versions []string, err error) 
 	return versions, nil
 }
 
-func ListSupportedKubeVersions(binaryName string) (err error) {
-	versions, err := GetSupportedKubeVersions(binaryName)
+// TODO: Should I keep this function?
+func ListSupportedKubeVersions() (err error) {
+	versions, err := GetSupportedKubeVersions()
 	if err != nil {
 		return err
 	}
@@ -42,9 +46,11 @@ func ListSupportedKubeVersions(binaryName string) (err error) {
 	return nil
 }
 
-func GetSupportedDrivers(binaryName string) (versions []string, err error) {
+func GetSupportedDrivers() (versions []string, err error) {
+	cfg := config.GetConfig()
+
 	stdout, _, err := utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Minikube.Binary,
 		"config defaults driver -o json",
 		false,
 		false,
@@ -64,9 +70,11 @@ func GetSupportedDrivers(binaryName string) (versions []string, err error) {
 	return versions, nil
 }
 
-func getClusters(binaryName string) (clusters []Cluster, err error) {
+func getClusters() (clusters []Cluster, err error) {
+	cfg := config.GetConfig()
+
 	stdout, _, err := utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Minikube.Binary,
 		"profile list -o json",
 		false,
 		false,

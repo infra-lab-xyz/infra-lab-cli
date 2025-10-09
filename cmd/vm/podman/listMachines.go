@@ -14,5 +14,5 @@ var ListMachinesCmd = &cobra.Command{
 }
 
 func runListMachines(cmd *cobra.Command, args []string) error {
-	return podmansrc.ListMachines(binaryName)
+	return podmansrc.ListMachines()
 }

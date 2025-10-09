@@ -14,5 +14,5 @@ var ListProfilesCmd = &cobra.Command{
 }
 
 func runListProfiles(cmd *cobra.Command, args []string) error {
-	return mksrc.ListProfiles(binaryName)
+	return mksrc.ListProfiles()
 }

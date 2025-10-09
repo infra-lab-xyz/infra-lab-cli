@@ -2,17 +2,20 @@ package minikube
 
 import (
 	"fmt"
+	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
-func Tunnel(binaryName string, cluster Cluster) (err error) {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func Tunnel(cluster Cluster) (err error) {
+	cfg := config.GetConfig()
+
+	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil
 	}
 
 	_, _, err = utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Minikube.Binary,
 		fmt.Sprintf("-p %s tunnel", cluster.Name),
 		true,
 		true,

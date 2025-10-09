@@ -3,13 +3,16 @@ package podman
 import (
 	"encoding/json"
 	"fmt"
+	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 	"strings"
 )
 
-func InspectMachine(binaryName string, machineName string) (machine *InspectedMachine, err error) {
+func InspectMachine(machineName string) (machine *InspectedMachine, err error) {
+	cfg := config.GetConfig()
+
 	stdout, _, err := utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Podman.Binary,
 		fmt.Sprintf("machine inspect %s", machineName),
 		false,
 		false,

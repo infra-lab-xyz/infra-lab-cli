@@ -13,5 +13,5 @@ var RestartClusterCmd = &cobra.Command{
 }
 
 func runRestartCluster(cmd *cobra.Command, args []string) error {
-	return mksrc.RestartCluster(binaryName, cluster)
+	return mksrc.RestartCluster(cluster)
 }

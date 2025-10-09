@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"os"
+	"os/user"
 	"testing"
 )
 
@@ -169,6 +171,91 @@ func TestByteCountIEC(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ByteCountIEC(tt.args.b); got != tt.want {
 				t.Errorf("ByteCountIEC() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIsDirExist(t *testing.T) {
+	tmpDir := t.TempDir()
+	tmpFile, err := os.CreateTemp(tmpDir, "file")
+	if err != nil {
+		t.Fatalf("Failed to create temp file: %v", err)
+	}
+	defer tmpFile.Close()
+
+	tests := []struct {
+		name string
+		path string
+		want bool
+	}{
+		{
+			"existing directory",
+			tmpDir,
+			true,
+		},
+		{
+			"existing file",
+			tmpFile.Name(),
+			false,
+		},
+		{
+			"non-existent path",
+			tmpDir + "/doesnotexist",
+			false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsDirExist(tt.path); got != tt.want {
+				t.Errorf("IsDirExist(%q) = %v, want %v", tt.path, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestExpandPath(t *testing.T) {
+	usr, _ := user.Current()
+	home := usr.HomeDir
+	_ = os.Setenv("FOO", "bar")
+
+	tests := []struct {
+		name string
+		path string
+		want string
+	}{
+		{
+			"home directory",
+			"~/test",
+			home + "/test",
+		},
+		{
+			"expand env variable",
+			"/tmp/$FOO",
+			"/tmp/bar",
+		},
+		{
+			"expand env variable with curvatures",
+			"/tmp/${FOO}",
+			"/tmp/bar",
+		},
+		{
+			"home dir with env variable",
+			"~/test/$FOO",
+			home + "/test/bar",
+		},
+		{
+			"nothing to expand",
+			"/no/vars",
+			"/no/vars",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ExpandPath(tt.path); got != tt.want {
+				t.Errorf("IsDirExist(%q) = %v, want %v", tt.path, got, tt.want)
 			}
 		})
 	}

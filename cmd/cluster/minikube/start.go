@@ -13,5 +13,5 @@ var StartClusterCmd = &cobra.Command{
 }
 
 func runStartCluster(cmd *cobra.Command, args []string) error {
-	return mksrc.StartCluster(binaryName, cluster)
+	return mksrc.StartCluster(cluster)
 }

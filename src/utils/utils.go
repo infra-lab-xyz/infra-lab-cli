@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/user"
 	"strconv"
 	"strings"
 )
@@ -115,4 +116,39 @@ func IfStringInSlice(str string, list []string) bool {
 	}
 
 	return false
+}
+
+func ExpandPath(path string) string {
+	if strings.HasPrefix(path, "~/") {
+		usr, err := user.Current()
+		if err != nil {
+			fmt.Println(err)
+			return path
+		}
+		homeDir := usr.HomeDir
+
+		path = strings.Replace(path, "~/", homeDir+"/", 1)
+	}
+	path = os.ExpandEnv(path)
+
+	return path
+}
+
+func IsDirExist(path string) bool {
+	path = ExpandPath(path)
+	stat, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+
+	return stat.IsDir()
+}
+
+func MapToString(data map[string]string, separator string) (result string) {
+	result = ""
+	for key, value := range data {
+		result += fmt.Sprintf("%s%s%s", key, separator, value)
+	}
+
+	return result
 }

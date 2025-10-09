@@ -1,12 +1,12 @@
 package minikube
 
-func RestartCluster(binaryName string, cluster Cluster) (err error) {
-	err = StopCluster(binaryName, cluster)
+func RestartCluster(cluster Cluster) (err error) {
+	err = StopCluster(cluster)
 	if err != nil {
 		return err
 	}
 
-	err = StartCluster(binaryName, cluster)
+	err = StartCluster(cluster)
 	if err != nil {
 		return err
 	}

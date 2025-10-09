@@ -2,16 +2,19 @@ package podman
 
 import (
 	"fmt"
+	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
-func GetMachineStatus(binaryName, machineName string) error {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func GetMachineStatus(machineName string) error {
+	cfg := config.GetConfig()
+
+	if !utils.IsBinaryInPath(cfg.Apps.Podman.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Podman.Binary))
 		return nil
 	}
 
-	machine, err := InspectMachine(binaryName, machineName)
+	machine, err := InspectMachine(machineName)
 	if err != nil {
 		return err
 	}

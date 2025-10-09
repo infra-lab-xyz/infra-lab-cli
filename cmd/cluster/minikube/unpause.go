@@ -13,5 +13,5 @@ var UnpauseClusterCmd = &cobra.Command{
 }
 
 func runUnpauseCluster(cmd *cobra.Command, args []string) error {
-	return mksrc.UnpauseCluster(binaryName, cluster)
+	return mksrc.UnpauseCluster(cluster)
 }
