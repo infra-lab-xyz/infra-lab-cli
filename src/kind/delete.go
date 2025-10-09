@@ -2,13 +2,10 @@ package kind
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
 func deleteCluster(clusterName string) (err error) {
-	cfg := config.GetConfig()
-
 	_, _, err = utils.ExecBinaryCommand(
 		cfg.Apps.Kind.Binary,
 		fmt.Sprintf("delete cluster --name %s", clusterName),
@@ -24,8 +21,6 @@ func deleteCluster(clusterName string) (err error) {
 }
 
 func DeleteCluster(cluster Cluster) (err error) {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Kind.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Kind.Binary))
 		return nil

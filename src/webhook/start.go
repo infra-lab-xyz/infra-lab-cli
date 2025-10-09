@@ -2,13 +2,10 @@ package webhook
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
 func startWebhook(webhook Webhook) (err error) {
-	cfg := config.GetConfig()
-
 	var envs []string
 	args := fmt.Sprintf("-hooks %s -template -ip %s -port %d -urlprefix %s -hotreload -logfile /dev/stdout",
 		webhook.WebhooksPath,
@@ -37,8 +34,6 @@ func startWebhook(webhook Webhook) (err error) {
 }
 
 func StartWebhook(webhook Webhook) (err error) {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Webhook.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Webhook.Binary))
 		return nil

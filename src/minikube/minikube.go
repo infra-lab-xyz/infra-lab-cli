@@ -8,11 +8,15 @@ import (
 	"strings"
 )
 
+var cfg *config.ILCConfig
+
+func init() {
+	cfg = config.GetConfig()
+}
+
 // TODO: these functions look very similar and duplicated
 
 func GetSupportedKubeVersions() (versions []string, err error) {
-	cfg := config.GetConfig()
-
 	stdout, _, err := utils.ExecBinaryCommand(
 		cfg.Apps.Minikube.Binary,
 		"config defaults kubernetes-version -o json",
@@ -47,8 +51,6 @@ func ListSupportedKubeVersions() (err error) {
 }
 
 func GetSupportedDrivers() (versions []string, err error) {
-	cfg := config.GetConfig()
-
 	stdout, _, err := utils.ExecBinaryCommand(
 		cfg.Apps.Minikube.Binary,
 		"config defaults driver -o json",
@@ -71,8 +73,6 @@ func GetSupportedDrivers() (versions []string, err error) {
 }
 
 func getClusters() (clusters []Cluster, err error) {
-	cfg := config.GetConfig()
-
 	stdout, _, err := utils.ExecBinaryCommand(
 		cfg.Apps.Minikube.Binary,
 		"profile list -o json",

@@ -2,14 +2,11 @@ package podman
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 	"strconv"
 )
 
 func CreateMachine(machineName string, params ConfigParams, startMachine bool) (err error) {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Podman.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Podman.Binary))
 		return nil

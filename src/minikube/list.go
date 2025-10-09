@@ -2,15 +2,12 @@ package minikube
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
 // TODO: different style. Yet easier to implement
 
 func ListProfiles() (err error) {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil

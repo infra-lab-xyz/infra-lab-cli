@@ -7,8 +7,6 @@ import (
 )
 
 func HTTPRepoReAdd(repo config.HelmRepo) (err error) {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil

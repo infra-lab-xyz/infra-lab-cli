@@ -2,14 +2,11 @@ package podman
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 	"strconv"
 )
 
 func ConfigureMachine(machineName string, params ConfigParams) error {
-	cfg := config.GetConfig()
-
 	// TODO: is it wise to move this check to a function, or this action would not help with code duplication?
 	if !utils.IsBinaryInPath(cfg.Apps.Podman.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Podman.Binary))

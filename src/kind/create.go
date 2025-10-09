@@ -2,13 +2,10 @@ package kind
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
 func createCluster(cluster Cluster) (err error) {
-	cfg := config.GetConfig()
-
 	args := fmt.Sprintf("create cluster --name %s", cluster.Name)
 	if cluster.ConfigPath != "" {
 		args += fmt.Sprintf(" --config=%s", cluster.ConfigPath)
@@ -26,8 +23,6 @@ func createCluster(cluster Cluster) (err error) {
 }
 
 func CreateCluster(cluster Cluster) (err error) {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Kind.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Kind.Binary))
 		return nil

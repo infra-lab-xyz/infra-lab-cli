@@ -9,9 +9,13 @@ import (
 	"strings"
 )
 
-func getHTTPRepos() (repos []config.HelmRepo, err error) {
-	cfg := config.GetConfig()
+var cfg *config.ILCConfig
 
+func init() {
+	cfg = config.GetConfig()
+}
+
+func getHTTPRepos() (repos []config.HelmRepo, err error) {
 	args := "repo list --output json"
 	stdout, _, err := utils.ExecBinaryCommand(
 		cfg.Apps.Helm.Binary,
@@ -48,8 +52,6 @@ func isHTTPRepoNameExist(repoName string, repos []config.HelmRepo) (exist bool) 
 }
 
 func GetHTTPRepoCharts(repoName string) (charts []Chart, err error) {
-	cfg := config.GetConfig()
-
 	args := fmt.Sprintf("repo search list %s/ --output json", repoName)
 	stdout, _, err := utils.ExecBinaryCommand(
 		cfg.Apps.Helm.Binary,
@@ -86,8 +88,6 @@ func GetHTTPRepoChartsSlice(repoName string) (chartsSlice []string, err error) {
 }
 
 func GetHTTPRepoChartVersions(chartName string) (chartVersions []Chart, err error) {
-	cfg := config.GetConfig()
-
 	args := fmt.Sprintf("repo search list %s --output json --verbose", chartName)
 	stdout, _, err := utils.ExecBinaryCommand(
 		cfg.Apps.Helm.Binary,

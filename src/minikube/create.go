@@ -2,14 +2,11 @@ package minikube
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 	"strconv"
 )
 
 func createCluster(cluster Cluster) (err error) {
-	cfg := config.GetConfig()
-
 	fmt.Printf("Creating cluster: \n")
 	fmt.Printf("\tName: %s\n", cluster.Name)
 	fmt.Printf("\tNodes: %d\n", cluster.NodesCount)
@@ -48,8 +45,6 @@ func createCluster(cluster Cluster) (err error) {
 }
 
 func CreateCluster(cluster Cluster) error {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil

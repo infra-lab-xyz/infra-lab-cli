@@ -23,8 +23,6 @@ func httpRepoUpdate(repo config.HelmRepo) (err error) {
 }
 
 func HTTPRepoUpdate(repo config.HelmRepo) error {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil

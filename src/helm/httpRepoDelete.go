@@ -7,8 +7,6 @@ import (
 )
 
 func httpRepoDelete(repo config.HelmRepo) (err error) {
-	cfg := config.GetConfig()
-
 	args := fmt.Sprintf("repo rm %s", repo.Name)
 
 	_, _, err = utils.ExecBinaryCommand(
@@ -23,8 +21,6 @@ func httpRepoDelete(repo config.HelmRepo) (err error) {
 }
 
 func HTTPRepoDelete(repo config.HelmRepo) error {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil

@@ -3,7 +3,6 @@ package podman
 import (
 	"encoding/json"
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 	"reflect"
 	"strconv"
@@ -20,8 +19,6 @@ var machineFields = []MachineField{
 }
 
 func ListMachines() error {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Podman.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Podman.Binary))
 		return nil
@@ -38,8 +35,6 @@ func ListMachines() error {
 }
 
 func GetMachineList() ([]ListedMachine, error) {
-	cfg := config.GetConfig()
-
 	stdout, _, err := utils.ExecBinaryCommand(
 		cfg.Apps.Podman.Binary,
 		"machine list --format json --all-providers",

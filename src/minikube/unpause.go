@@ -2,13 +2,10 @@ package minikube
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
 func unpauseCluster(clusterName string) (err error) {
-	cfg := config.GetConfig()
-
 	_, _, err = utils.ExecBinaryCommand(
 		cfg.Apps.Minikube.Binary,
 		fmt.Sprintf("-p %s unpause", clusterName),
@@ -24,8 +21,6 @@ func unpauseCluster(clusterName string) (err error) {
 }
 
 func UnpauseCluster(cluster Cluster) (err error) {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil

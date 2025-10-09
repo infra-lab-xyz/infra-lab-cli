@@ -2,13 +2,10 @@ package kind
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
 func RecreateCluster(cluster Cluster) (err error) {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Kind.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Kind.Binary))
 		return nil

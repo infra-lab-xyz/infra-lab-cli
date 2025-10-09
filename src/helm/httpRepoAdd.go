@@ -7,8 +7,6 @@ import (
 )
 
 func httpRepoAdd(repo config.HelmRepo) (err error) {
-	cfg := config.GetConfig()
-
 	args := fmt.Sprintf("repo add %s %s", repo.Name, repo.Url)
 
 	_, _, err = utils.ExecBinaryCommand(
@@ -23,8 +21,6 @@ func httpRepoAdd(repo config.HelmRepo) (err error) {
 }
 
 func HTTPRepoAdd(repo config.HelmRepo) error {
-	cfg := config.GetConfig()
-
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil
