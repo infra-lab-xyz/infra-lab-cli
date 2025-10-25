@@ -1,9 +1,11 @@
 package config
 
 type ILCConfig struct {
-	Version     string `mapstructure:"version" default:"1.0"`
-	Apps        apps   `mapstructure:"apps"`
-	ProjectsDir string `mapstructure:"projects_dir" default:"~/.infra-lab"`
+	// TODO: investigate how to implement configs versioning
+	// Version     string `mapstructure:"version" default:"1.0"`
+	Apps apps `mapstructure:"apps"`
+	// TODO: hardcoded now
+	// ProjectsDir string `mapstructure:"projects_dir" default:"~/.infra-lab"`
 }
 
 type apps struct {
@@ -63,4 +65,13 @@ type podman struct {
 	CPUs        string `mapstructure:"cpus" default:"2"`
 	Memory      string `mapstructure:"memory" default:"2G"`
 	DiskSize    string `mapstructure:"disk_size" default:"10G"`
+}
+
+type HelmRepo struct {
+	Name string `json:"name" yaml:"name"`
+	Url  string `json:"url" yaml:"url"`
+	Type string `json:"-" yaml:"-"`
+}
+type OCIRepos struct {
+	Repos []HelmRepo `mapstructure:"repos"`
 }

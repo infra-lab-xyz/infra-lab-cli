@@ -3,6 +3,8 @@ package podman
 import (
 	"infra-lab-cli/config"
 	podmansrc "infra-lab-cli/src/podman"
+	"infra-lab-cli/src/utils"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -12,7 +14,6 @@ var RootCmd = &cobra.Command{
 	Short: "Manage podman machines",
 }
 
-// TODO: consider to define config variable
 var machineName string
 var binaryName = "podman"
 var defaultMachineName string
@@ -33,6 +34,17 @@ func commonFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&diskSize, "disk-size", "d", cfg.Apps.Podman.DiskSize, "Disk size in GiB for the podman machine")
 }
 
+func commonParams(cmd *cobra.Command, cpus, memory, diskSize string) podmansrc.ConfigParams {
+	cpuVal, _ := strconv.Atoi(cpus)
+	memVal := utils.ConvertToDesiredUnit(memory, "M")
+	diskSizeVal := utils.ConvertToDesiredUnit(diskSize, "G")
+	return podmansrc.ConfigParams{
+		CPUs:     podmansrc.ConfigParam{ValueFlag: cpuVal, IsProvided: cmd.Flags().Changed("cpus")},
+		Memory:   podmansrc.ConfigParam{ValueFlag: memVal.IntValue, IsProvided: cmd.Flags().Changed("memory")},
+		DiskSize: podmansrc.ConfigParam{ValueFlag: diskSizeVal.IntValue, IsProvided: cmd.Flags().Changed("disk-size")},
+	}
+}
+
 func init() {
 	cfg = *config.GetConfig()
 	// TODO: Select the default machine name based on the default system connection
@@ -51,5 +63,6 @@ func init() {
 	RootCmd.AddCommand(RestartMachineCmd)
 	RootCmd.AddCommand(ConfigMachineCmd)
 	RootCmd.AddCommand(CreateMachineCmd)
+	RootCmd.AddCommand(DeleteMachineCmd)
 	RootCmd.AddCommand(StatusCmd)
 }

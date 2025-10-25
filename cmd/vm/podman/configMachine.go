@@ -18,6 +18,7 @@ var ConfigMachineCmd = &cobra.Command{
 	RunE:  runConfigMachine,
 }
 
+// TODO: Add recreate flag?
 func runConfigMachine(cmd *cobra.Command, args []string) error {
 	if !cmd.Flags().Changed("cpus") &&
 		!cmd.Flags().Changed("memory") &&
@@ -25,13 +26,10 @@ func runConfigMachine(cmd *cobra.Command, args []string) error {
 		return cmd.Help()
 	}
 
-	params := podmansrc.ConfigParams{
-		CPUs:     podmansrc.ConfigParam{ValueFlag: cpus, IsProvided: cmd.Flags().Changed("cpus")},
-		Memory:   podmansrc.ConfigParam{ValueFlag: memory, IsProvided: cmd.Flags().Changed("memory")},
-		DiskSize: podmansrc.ConfigParam{ValueFlag: diskSize, IsProvided: cmd.Flags().Changed("disk-size")},
-	}
-
-	return podmansrc.ConfigureMachine(machineName, params)
+	return podmansrc.ConfigureMachine(
+		machineName,
+		commonParams(cmd, cpus, memory, diskSize),
+	)
 }
 
 func init() {

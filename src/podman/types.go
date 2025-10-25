@@ -55,7 +55,7 @@ type MachineField struct {
 }
 
 type ConfigParam struct {
-	ValueFlag  string
+	ValueFlag  int
 	Value      int
 	IsProvided bool
 	IsChanged  bool

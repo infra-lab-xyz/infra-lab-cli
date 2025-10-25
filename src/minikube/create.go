@@ -3,7 +3,6 @@ package minikube
 import (
 	"fmt"
 	"infra-lab-cli/src/utils"
-	"strconv"
 )
 
 func createCluster(cluster Cluster) (err error) {
@@ -18,11 +17,11 @@ func createCluster(cluster Cluster) (err error) {
 	fmt.Printf("\tDriver: %s\n", cluster.Config.Driver)
 	fmt.Printf("\tCIDR: %s\n", cluster.CIDR)
 
-	cmdArgs := utils.MapToString(map[string]string{
+	cmdArgs := utils.MapToString(map[string]any{
 		"--cpus":               cluster.Config.CPUsFlag,
 		"--memory":             cluster.Config.MemoryFlag,
 		"--disk-size":          cluster.Config.DiskSizeFlag,
-		"--nodes":              strconv.Itoa(cluster.NodesCount),
+		"--nodes":              cluster.NodesCount,
 		"--kubernetes-version": cluster.Config.KubeConfig.KubeVersion,
 		"--extra-config=kubeadm.pod-network-cidr": cluster.CIDR,
 		"--driver": cluster.Config.Driver,

@@ -63,7 +63,10 @@ func ConfigureMachine(machineName string, params ConfigParams) error {
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
-		fmt.Printf("Memory was updated from %.1fG to %.1fG\n", utils.ConvertMiBToGiB(machine.Resources.Memory), utils.ConvertMiBToGiB(params.Memory.Value))
+		fmt.Printf("Memory was updated from %s to %s\n",
+			utils.ConvertToDesiredUnit(fmt.Sprintf("%d%s", machine.Resources.Memory, "M"), "G").FloatStr,
+			utils.ConvertToDesiredUnit(fmt.Sprintf("%d%s", params.Memory.Value, "M"), "G").FloatStr,
+		)
 	}
 
 	if params.DiskSize.IsChanged {
@@ -78,7 +81,10 @@ func ConfigureMachine(machineName string, params ConfigParams) error {
 			if err != nil {
 				fmt.Println("Error:", err)
 			}
-			fmt.Printf("Disk size was updated from %d to %d\n", machine.Resources.DiskSize, params.DiskSize.Value)
+			fmt.Printf("Disk size was updated from %s to %s\n",
+				utils.ConvertToDesiredUnit(fmt.Sprintf("%d%s", machine.Resources.DiskSize, "G"), "G").IntStr,
+				utils.ConvertToDesiredUnit(fmt.Sprintf("%d%s", params.DiskSize.Value, "G"), "G").IntStr,
+			)
 		} else {
 			fmt.Println("Disk size must be greater than the current one.")
 		}
@@ -94,25 +100,8 @@ func ConfigureMachine(machineName string, params ConfigParams) error {
 	return nil
 }
 
-func checkIfMemoryChanged(param *ConfigParam, currentValue int) (err error) {
-	param.Value, err = utils.ConvertToMiB(param.ValueFlag)
-	if err != nil {
-		fmt.Printf("Invalid memory value: %v", err)
-		return err
-	}
-	if param.Value != currentValue {
-		param.IsChanged = true
-	}
-	return nil
-}
-
 func checkIfParamChanged(param *ConfigParam, currentValue int) (err error) {
-	value, err := strconv.Atoi(param.ValueFlag)
-	if err != nil {
-		return fmt.Errorf("invalid value should be of Int type")
-	}
-	param.Value = value
-	if param.Value != currentValue {
+	if param.ValueFlag != currentValue {
 		param.IsChanged = true
 	}
 	return nil
@@ -127,7 +116,7 @@ func checkIfParamsWereChanged(params *ConfigParams, machine *InspectedMachine) (
 	}
 
 	if params.Memory.IsProvided {
-		err := checkIfMemoryChanged(&params.Memory, machine.Resources.Memory)
+		err := checkIfParamChanged(&params.Memory, machine.Resources.Memory)
 		if err != nil {
 			return err
 		}

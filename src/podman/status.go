@@ -16,11 +16,12 @@ func GetMachineStatus(machineName string) error {
 		return err
 	}
 
-	fmt.Printf("%s\t %s\t %d cpu\t %.1f GiB\t %d GiB\n",
+	fmt.Printf("%s\t%s\t%d cpu\t%s\t%s\n",
 		machine.Name, machine.State,
 		machine.Resources.CPUs,
-		utils.ConvertMiBToGiB(machine.Resources.Memory),
-		machine.Resources.DiskSize)
+		utils.ConvertToDesiredUnit(fmt.Sprintf("%d%s", machine.Resources.Memory, "M"), "G").FloatStr,
+		utils.ConvertToDesiredUnit(fmt.Sprintf("%d%s", machine.Resources.DiskSize, "G"), "G").IntStr,
+	)
 
 	return nil
 }
