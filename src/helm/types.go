@@ -15,6 +15,7 @@ type OCIChartVersions struct {
 type HelmRepo struct {
 	Name string `json:"name" yaml:"name"`
 	Url  string `json:"url" yaml:"url"`
+	// TODO: Do I need this field? It is possible to calculate the type based on schema. This should not be CPU intensive.
 	Type string `json:"-" yaml:"-"`
 }
 
