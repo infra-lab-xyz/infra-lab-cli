@@ -13,7 +13,9 @@ func init() {
 	OCIReposConfig = viper.New()
 }
 
-func isHTTPRepoNameExist(repoName string, repos []HelmRepo) (exist bool) {
+func isRepoNameExist(repoName string) (exist bool) {
+	repos, _ := GetRepos()
+
 	for _, repo := range repos {
 		if repo.Name == repoName {
 			return true

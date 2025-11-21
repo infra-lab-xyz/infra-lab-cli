@@ -5,8 +5,11 @@ import (
 	"infra-lab-cli/src/utils"
 )
 
-func httpRepoAdd(repo HelmRepo) (err error) {
-	args := fmt.Sprintf("repo add %s %s", repo.Name, repo.Url)
+func httpRepoAdd(repoName, repoUrl string, forceUpdate bool) (err error) {
+	args := fmt.Sprintf("repo add %s %s", repoName, repoUrl)
+	if forceUpdate {
+		args = fmt.Sprintf("%s --force-update", args)
+	}
 
 	_, _, err = utils.ExecBinaryCommand(
 		cfg.Apps.Helm.Binary,
@@ -19,21 +22,17 @@ func httpRepoAdd(repo HelmRepo) (err error) {
 	return err
 }
 
+// TODO: probably not needed anymore, since I have another entrance point
 func HTTPRepoAdd(repo HelmRepo) error {
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil
 	}
 
-	repos, err := getHTTPRepos()
-	if err != nil {
-		return err
-	}
-
-	if isHTTPRepoNameExist(repo.Name, repos) {
+	if isRepoNameExist(repo.Name) {
 		fmt.Printf("Repo %s already exists. Please use re-add command instead\n", repo.Name)
 	} else {
-		err = httpRepoAdd(repo)
+		err := httpRepoAdd(repo.Name, repo.Url, false)
 		if err != nil {
 			return err
 		}

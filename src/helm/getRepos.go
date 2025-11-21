@@ -28,10 +28,6 @@ func getHTTPRepos() (repos []HelmRepo, err error) {
 		return nil, fmt.Errorf("failed to get the list repos: %v", err)
 	}
 
-	for idx := range repos {
-		repos[idx].Type = "http"
-	}
-
 	return repos, nil
 }
 

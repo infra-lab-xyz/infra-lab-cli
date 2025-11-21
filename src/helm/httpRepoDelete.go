@@ -19,19 +19,15 @@ func httpRepoDelete(repo HelmRepo) (err error) {
 	return err
 }
 
+// TODO: probably not needed anymore, since I'll have another entrance point
 func HTTPRepoDelete(repo HelmRepo) error {
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil
 	}
 
-	repos, err := getHTTPRepos()
-	if err != nil {
-		return err
-	}
-
-	if isHTTPRepoNameExist(repo.Name, repos) {
-		err = httpRepoDelete(repo)
+	if isRepoNameExist(repo.Name) {
+		err := httpRepoDelete(repo)
 		if err != nil {
 			return err
 		}
