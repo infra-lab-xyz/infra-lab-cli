@@ -7,15 +7,18 @@ import (
 	"infra-lab-cli/src/utils"
 	"slices"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 var cfg *config.ILCConfig
 
 func init() {
 	cfg = config.GetConfig()
+	OCIReposConfig = viper.New()
 }
 
-func getHTTPRepos() (repos []config.HelmRepo, err error) {
+func getHTTPRepos() (repos []HelmRepo, err error) {
 	args := "repo list --output json"
 	stdout, _, err := utils.ExecBinaryCommand(
 		cfg.Apps.Helm.Binary,
@@ -42,7 +45,7 @@ func getHTTPRepos() (repos []config.HelmRepo, err error) {
 	return repos, nil
 }
 
-func isHTTPRepoNameExist(repoName string, repos []config.HelmRepo) (exist bool) {
+func isHTTPRepoNameExist(repoName string, repos []HelmRepo) (exist bool) {
 	for _, repo := range repos {
 		if repo.Name == repoName {
 			return true
@@ -123,16 +126,20 @@ func GetHTTPRepoChartVersionsSlice(chartName string) (chartVersionsSlice []strin
 	return chartVersionsSlice, nil
 }
 
-func GetRepos() (repos []config.HelmRepo, err error) {
+func GetRepos() (repos []HelmRepo, err error) {
 	httpRepos, _ := getHTTPRepos()
 
-	_ = config.LoadOCIRepos()
-	ociRepos := *config.GetOCIRepos()
+	_ = LoadOCIRepos()
+	ociRepos := *GetOCIRepos()
 
 	repos = slices.Concat(httpRepos, ociRepos.Repos)
-	slices.SortFunc(repos, func(a, b config.HelmRepo) int {
+	slices.SortFunc(repos, func(a, b HelmRepo) int {
 		return strings.Compare(a.Name, b.Name)
 	})
 
 	return repos, nil
+}
+
+func RepoAdd() {
+	// pass
 }

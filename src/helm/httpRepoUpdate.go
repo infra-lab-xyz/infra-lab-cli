@@ -6,7 +6,7 @@ import (
 	"infra-lab-cli/src/utils"
 )
 
-func httpRepoUpdate(repo config.HelmRepo) (err error) {
+func httpRepoUpdate(repo HelmRepo) (err error) {
 	cfg := config.GetConfig()
 
 	args := fmt.Sprintf("repo update %s", repo.Name)
@@ -22,7 +22,7 @@ func httpRepoUpdate(repo config.HelmRepo) (err error) {
 	return err
 }
 
-func HTTPRepoUpdate(repo config.HelmRepo) error {
+func HTTPRepoUpdate(repo HelmRepo) error {
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil

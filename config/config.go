@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"infra-lab-cli/src/utils"
-	"os"
 	"reflect"
 	"strings"
 
@@ -11,17 +10,11 @@ import (
 )
 
 var GlobalSettings ILCConfig
-var HelmReposOCI OCIRepos
 var GlobalSettingsConfig *viper.Viper
-var OCIReposConfig *viper.Viper
-var projectPath = "~/.infra-lab"
+var ProjectPath = "~/.infra-lab"
 
 func GetConfig() *ILCConfig {
 	return &GlobalSettings
-}
-
-func GetOCIRepos() *OCIRepos {
-	return &HelmReposOCI
 }
 
 func setDefaultsAndBindEnvs(cfg any, path, envPrefix string, viperCfg *viper.Viper) {
@@ -76,21 +69,11 @@ func LoadConfig() (err error) {
 
 	setDefaultsAndBindEnvs(GlobalSettings, "", envPrefix, GlobalSettingsConfig)
 	// TODO: Since IDK how to gather this value from config before config loaded and not ready to just resolve env var will keep projectDir static
-	configPath := utils.ExpandPath(fmt.Sprintf("%s/.infra-lab-cli.yaml", projectPath))
+	configPath := utils.ExpandPath(fmt.Sprintf("%s/infra-lab-cli.yaml", ProjectPath))
 
 	GlobalSettingsConfig.SetConfigFile(configPath)
-
 	_ = GlobalSettingsConfig.ReadInConfig()
-
 	if err = GlobalSettingsConfig.Unmarshal(&GlobalSettings); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-	err = viper.Unmarshal(&GlobalConfig)
-	if err != nil {
 		return err
 	}
 
@@ -99,6 +82,5 @@ func LoadConfig() (err error) {
 
 func init() {
 	GlobalSettingsConfig = viper.New()
-	OCIReposConfig = viper.New()
 	_ = LoadConfig()
 }

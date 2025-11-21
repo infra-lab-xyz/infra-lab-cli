@@ -2,11 +2,10 @@ package helm
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
-func HTTPRepoReAdd(repo config.HelmRepo) (err error) {
+func HTTPRepoReAdd(repo HelmRepo) (err error) {
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil

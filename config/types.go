@@ -66,12 +66,3 @@ type podman struct {
 	Memory      string `mapstructure:"memory" default:"2G"`
 	DiskSize    string `mapstructure:"disk_size" default:"10G"`
 }
-
-type HelmRepo struct {
-	Name string `json:"name" yaml:"name"`
-	Url  string `json:"url" yaml:"url"`
-	Type string `json:"-" yaml:"-"`
-}
-type OCIRepos struct {
-	Repos []HelmRepo `mapstructure:"repos"`
-}

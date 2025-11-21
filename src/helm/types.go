@@ -11,3 +11,13 @@ type OCIChartVersions struct {
 	Url  string   `json:"-"`
 	Tags []string `json:"tags"`
 }
+
+type HelmRepo struct {
+	Name string `json:"name" yaml:"name"`
+	Url  string `json:"url" yaml:"url"`
+	Type string `json:"-" yaml:"-"`
+}
+
+type OCIRepos struct {
+	Repos []HelmRepo `mapstructure:"repos"`
+}

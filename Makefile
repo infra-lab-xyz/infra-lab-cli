@@ -23,6 +23,10 @@ build: ##				Build binary of main package
 test: ##				Run tests
 	@go test -v ./...
 
+.PHONY: test-json
+test-json: ##			Run tests and print output in JSON
+	@go test -json ./...
+
 .PHONY: tidy
 tidy: ##				Update go.mod and go.sum files
 	@go mod tidy

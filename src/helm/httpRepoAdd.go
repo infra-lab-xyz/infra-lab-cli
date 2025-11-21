@@ -2,11 +2,10 @@ package helm
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
-func httpRepoAdd(repo config.HelmRepo) (err error) {
+func httpRepoAdd(repo HelmRepo) (err error) {
 	args := fmt.Sprintf("repo add %s %s", repo.Name, repo.Url)
 
 	_, _, err = utils.ExecBinaryCommand(
@@ -20,7 +19,7 @@ func httpRepoAdd(repo config.HelmRepo) (err error) {
 	return err
 }
 
-func HTTPRepoAdd(repo config.HelmRepo) error {
+func HTTPRepoAdd(repo HelmRepo) error {
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil

@@ -2,11 +2,10 @@ package helm
 
 import (
 	"fmt"
-	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
-func httpRepoDelete(repo config.HelmRepo) (err error) {
+func httpRepoDelete(repo HelmRepo) (err error) {
 	args := fmt.Sprintf("repo rm %s", repo.Name)
 
 	_, _, err = utils.ExecBinaryCommand(
@@ -20,7 +19,7 @@ func httpRepoDelete(repo config.HelmRepo) (err error) {
 	return err
 }
 
-func HTTPRepoDelete(repo config.HelmRepo) error {
+func HTTPRepoDelete(repo HelmRepo) error {
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
 		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 		return nil
