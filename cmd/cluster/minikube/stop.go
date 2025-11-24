@@ -13,5 +13,5 @@ var StopClusterCmd = &cobra.Command{
 }
 
 func runStopCluster(cmd *cobra.Command, args []string) error {
-	return mksrc.StopCluster(binaryName, cluster)
+	return mksrc.StopCluster(cluster)
 }

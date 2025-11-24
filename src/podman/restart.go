@@ -5,25 +5,25 @@ import (
 	"infra-lab-cli/src/utils"
 )
 
-func RestartMachine(binaryName, machineName string) (err error) {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func RestartMachine(machineName string) (err error) {
+	if !utils.IsBinaryInPath(cfg.Apps.Podman.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Podman.Binary))
 		return nil
 	}
 
-	machine, err := InspectMachine(binaryName, machineName)
+	machine, err := InspectMachine(machineName)
 	if err != nil {
 		return err
 	}
 
 	if machine.State == "running" {
-		err = StopMachine(binaryName, machineName)
+		err = StopMachine(machineName)
 		if err != nil {
 			return err
 		}
 	}
 
-	err = StartMachine(binaryName, machineName)
+	err = StartMachine(machineName)
 	if err != nil {
 		return err
 	}

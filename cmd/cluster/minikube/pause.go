@@ -13,5 +13,5 @@ var PauseClusterCmd = &cobra.Command{
 }
 
 func runPauseCluster(cmd *cobra.Command, args []string) error {
-	return mksrc.PauseCluster(binaryName, cluster)
+	return mksrc.PauseCluster(cluster)
 }

@@ -18,9 +18,9 @@ var recreate bool
 
 func runCreateCluster(cmd *cobra.Command, args []string) error {
 	if recreate {
-		return mksrc.RecreateCluster(cfg.Apps.Minikube.Binary, cluster)
+		return mksrc.RecreateCluster(cluster)
 	} else {
-		return mksrc.CreateCluster(cfg.Apps.Minikube.Binary, cluster)
+		return mksrc.CreateCluster(cluster)
 	}
 }
 

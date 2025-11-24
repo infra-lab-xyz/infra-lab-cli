@@ -1,19 +1,21 @@
 package config
 
 type ILCConfig struct {
-	Version     string `mapstructure:"version" default:"1.0"`
-	Apps        apps   `mapstructure:"apps" `
-	ProjectsDir string `mapstructure:"projects_dir" default:"~/.infra-lab"`
+	// TODO: investigate how to implement configs versioning
+	// Version     string `mapstructure:"version" default:"1.0"`
+	Apps apps `mapstructure:"apps"`
+	// TODO: hardcoded now
+	// ProjectsDir string `mapstructure:"projects_dir" default:"~/.infra-lab"`
 }
 
 type apps struct {
-	Docker   dockerConfig `mapstructure:"docker" `
-	Helm     helm         `mapstructure:"helm" `
-	Kind     kind         `mapstructure:"kind" `
-	Minikube minikube     `mapstructure:"minikube" `
-	Podman   podman       `mapstructure:"podman" `
-	Skopeo   skopeo       `mapstructure:"skopeo" `
-	Webhook  webhook      `mapstructure:"webhook" `
+	Docker   dockerConfig `mapstructure:"docker"`
+	Helm     helm         `mapstructure:"helm"`
+	Kind     kind         `mapstructure:"kind"`
+	Minikube minikube     `mapstructure:"minikube"`
+	Podman   podman       `mapstructure:"podman"`
+	Skopeo   skopeo       `mapstructure:"skopeo"`
+	Webhook  webhook      `mapstructure:"webhook"`
 }
 
 type skopeo struct {

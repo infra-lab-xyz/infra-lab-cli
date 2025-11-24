@@ -7,14 +7,14 @@ import (
 
 // TODO: different style. Yet easier to implement. Should be standardized in the future
 
-func ListClusters(binaryName string) (err error) {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func ListClusters() (err error) {
+	if !utils.IsBinaryInPath(cfg.Apps.Kind.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Kind.Binary))
 		return nil
 	}
 
 	_, _, err = utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Kind.Binary,
 		"get clusters",
 		true,
 		false,

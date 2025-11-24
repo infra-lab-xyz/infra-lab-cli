@@ -5,13 +5,13 @@ import (
 	"infra-lab-cli/src/utils"
 )
 
-func RecreateCluster(binaryName string, cluster Cluster) (err error) {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func RecreateCluster(cluster Cluster) (err error) {
+	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil
 	}
 
-	clusters, err := getClusters(binaryName)
+	clusters, err := getClusters()
 	if err != nil {
 		return err
 	}
@@ -19,13 +19,13 @@ func RecreateCluster(binaryName string, cluster Cluster) (err error) {
 	existingCluster := getClusterIfExists(cluster, clusters)
 
 	if existingCluster != nil {
-		err = deleteCluster(binaryName, cluster.Name)
+		err = deleteCluster(cluster.Name)
 		if err != nil {
 			return err
 		}
 	}
 
-	err = createCluster(binaryName, cluster)
+	err = createCluster(cluster)
 	if err != nil {
 		return err
 	}

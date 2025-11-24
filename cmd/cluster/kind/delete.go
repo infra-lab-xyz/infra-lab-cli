@@ -14,5 +14,5 @@ var DeleteClustersCmd = &cobra.Command{
 }
 
 func runDeleteClusters(cmd *cobra.Command, args []string) error {
-	return kindsrc.DeleteCluster(binaryName, cluster)
+	return kindsrc.DeleteCluster(cluster)
 }

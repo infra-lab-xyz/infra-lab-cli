@@ -5,9 +5,9 @@ import (
 	"infra-lab-cli/src/utils"
 )
 
-func startCluster(binaryName string, cluster Cluster) (err error) {
+func startCluster(cluster Cluster) (err error) {
 	_, _, err = utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Minikube.Binary,
 		fmt.Sprintf("-p %s start", cluster.Name),
 		true,
 		false,
@@ -20,13 +20,13 @@ func startCluster(binaryName string, cluster Cluster) (err error) {
 	return nil
 }
 
-func StartCluster(binaryName string, cluster Cluster) error {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func StartCluster(cluster Cluster) error {
+	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil
 	}
 
-	clusters, err := getClusters(binaryName)
+	clusters, err := getClusters()
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func StartCluster(binaryName string, cluster Cluster) error {
 		// TODO: not sure which else statuses are possible and this is for sure a hardcode
 		if existingCluster.Status == "Stopped" {
 			fmt.Printf("Cluster %s is stopped. Trying to start it\n", cluster.Name)
-			err = startCluster(binaryName, cluster)
+			err = startCluster(cluster)
 			if err != nil {
 				fmt.Println(err)
 			}

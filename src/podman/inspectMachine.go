@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-func InspectMachine(binaryName string, machineName string) (machine *InspectedMachine, err error) {
+func InspectMachine(machineName string) (machine *InspectedMachine, err error) {
 	stdout, _, err := utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Podman.Binary,
 		fmt.Sprintf("machine inspect %s", machineName),
 		false,
 		false,

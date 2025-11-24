@@ -7,14 +7,14 @@ import (
 
 // TODO: different style. Yet easier to implement
 
-func ListProfiles(binaryName string) (err error) {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func ListProfiles() (err error) {
+	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil
 	}
 
 	_, _, err = utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Minikube.Binary,
 		"profile list",
 		true,
 		false,

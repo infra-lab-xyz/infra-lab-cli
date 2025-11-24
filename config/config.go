@@ -2,20 +2,22 @@ package config
 
 import (
 	"fmt"
-	"os/user"
+	"infra-lab-cli/src/utils"
 	"reflect"
 	"strings"
 
 	"github.com/spf13/viper"
 )
 
-var GlobalConfig ILCConfig
+var GlobalSettings ILCConfig
+var GlobalSettingsConfig *viper.Viper
+var ProjectPath = "~/.infra-lab"
 
 func GetConfig() *ILCConfig {
-	return &GlobalConfig
+	return &GlobalSettings
 }
 
-func setDefaultsAndBindEnvs(cfg any, path, envPrefix string) {
+func setDefaultsAndBindEnvs(cfg any, path, envPrefix string, viperCfg *viper.Viper) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Printf("Recovered from panic in setDefaultsAndBindEnvs: %v\n", r)
@@ -36,7 +38,7 @@ func setDefaultsAndBindEnvs(cfg any, path, envPrefix string) {
 			} else {
 				newPath = path + "." + tag
 			}
-			setDefaultsAndBindEnvs(cfgValue.Field(i).Interface(), newPath, envPrefix)
+			setDefaultsAndBindEnvs(cfgValue.Field(i).Interface(), newPath, envPrefix, viperCfg)
 		} else {
 			var cfgPath string
 			defaultValue := field.Tag.Get("default")
@@ -46,11 +48,11 @@ func setDefaultsAndBindEnvs(cfg any, path, envPrefix string) {
 				cfgPath = path + "." + tag
 			}
 			envPath := strings.ToUpper(strings.ReplaceAll(cfgPath, ".", "__"))
-			err := viper.BindEnv(cfgPath, envPrefix+"_"+envPath)
+			err := viperCfg.BindEnv(cfgPath, envPrefix+"_"+envPath)
 			if err != nil {
 				fmt.Printf("BindEnv error: %v\n", err)
 			}
-			viper.SetDefault(cfgPath, defaultValue)
+			viperCfg.SetDefault(cfgPath, defaultValue)
 
 		}
 	}
@@ -60,21 +62,18 @@ func setDefaultsAndBindEnvs(cfg any, path, envPrefix string) {
 
 func LoadConfig() (err error) {
 	envPrefix := "ILC_"
-	viper.SetEnvPrefix(envPrefix)
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "__"))
-	viper.AutomaticEnv()
 
-	setDefaultsAndBindEnvs(GlobalConfig, "", envPrefix)
-	usr, _ := user.Current()
-	configPath := fmt.Sprintf("%s/.infra-lab.yaml", usr.HomeDir)
+	GlobalSettingsConfig.SetEnvPrefix(envPrefix)
+	GlobalSettingsConfig.SetEnvKeyReplacer(strings.NewReplacer(".", "__"))
+	GlobalSettingsConfig.AutomaticEnv()
 
-	viper.SetConfigFile(configPath)
+	setDefaultsAndBindEnvs(GlobalSettings, "", envPrefix, GlobalSettingsConfig)
+	// TODO: Since IDK how to gather this value from config before config loaded and not ready to just resolve env var will keep projectDir static
+	configPath := utils.ExpandPath(fmt.Sprintf("%s/infra-lab-cli.yaml", ProjectPath))
 
-	// TODO add error handling. It is possible to use `viper.SafeWriteConfigAs(configPath)` to try to write to file, but not to override it
-	_ = viper.ReadInConfig()
-
-	err = viper.Unmarshal(&GlobalConfig)
-	if err != nil {
+	GlobalSettingsConfig.SetConfigFile(configPath)
+	_ = GlobalSettingsConfig.ReadInConfig()
+	if err = GlobalSettingsConfig.Unmarshal(&GlobalSettings); err != nil {
 		return err
 	}
 
@@ -82,5 +81,6 @@ func LoadConfig() (err error) {
 }
 
 func init() {
+	GlobalSettingsConfig = viper.New()
 	_ = LoadConfig()
 }

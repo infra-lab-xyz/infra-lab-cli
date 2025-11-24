@@ -9,9 +9,9 @@ import (
 
 // TODO: this function has wrong and confusing name
 
-func getConnections(binaryName string, connections *[]Connection) (err error) {
+func getConnections(connections *[]Connection) (err error) {
 	stdout, _, err := utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Podman.Binary,
 		"system connection list --format json",
 		false,
 		false,
@@ -31,8 +31,8 @@ func getConnections(binaryName string, connections *[]Connection) (err error) {
 	return nil
 }
 
-func GetConnections(binaryName string, connections *[]Connection) (err error) {
-	err = getConnections(binaryName, connections)
+func GetConnections(connections *[]Connection) (err error) {
+	err = getConnections(connections)
 	if err != nil {
 		fmt.Println(err)
 		return nil

@@ -13,12 +13,12 @@ var (
 )
 
 var ConfigMachineCmd = &cobra.Command{
-	Use:     "config",
-	Aliases: []string{"c"},
-	Short:   "Configure podman machine",
-	RunE:    runConfigMachine,
+	Use:   "config",
+	Short: "Configure podman machine",
+	RunE:  runConfigMachine,
 }
 
+// TODO: Add recreate flag?
 func runConfigMachine(cmd *cobra.Command, args []string) error {
 	if !cmd.Flags().Changed("cpus") &&
 		!cmd.Flags().Changed("memory") &&
@@ -26,17 +26,12 @@ func runConfigMachine(cmd *cobra.Command, args []string) error {
 		return cmd.Help()
 	}
 
-	params := podmansrc.ConfigParams{
-		CPUs:     podmansrc.ConfigParam{ValueFlag: cpus, IsProvided: cmd.Flags().Changed("cpus")},
-		Memory:   podmansrc.ConfigParam{ValueFlag: memory, IsProvided: cmd.Flags().Changed("memory")},
-		DiskSize: podmansrc.ConfigParam{ValueFlag: diskSize, IsProvided: cmd.Flags().Changed("disk-size")},
-	}
-
-	return podmansrc.ConfigureMachine(binaryName, machineName, params)
+	return podmansrc.ConfigureMachine(
+		machineName,
+		commonParams(cmd, cpus, memory, diskSize),
+	)
 }
 
 func init() {
-	ConfigMachineCmd.Flags().StringVarP(&cpus, "cpus", "c", cfg.Apps.Podman.CPUs, "Number of CPUs to allocate to the podman machine")
-	ConfigMachineCmd.Flags().StringVarP(&memory, "memory", "m", cfg.Apps.Podman.Memory, "Memory in GiB or in MiB to allocate to the podman machine. E.g. 2G, 2048, 2048M")
-	ConfigMachineCmd.Flags().StringVarP(&diskSize, "disk-size", "d", cfg.Apps.Podman.DiskSize, "Disk size in GiB for the podman machine")
+	commonFlags(ConfigMachineCmd)
 }

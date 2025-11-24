@@ -5,7 +5,7 @@ import (
 	"infra-lab-cli/src/utils"
 )
 
-func createCluster(binaryName string, cluster Cluster) (err error) {
+func createCluster(cluster Cluster) (err error) {
 	fmt.Printf("Creating cluster: \n")
 	fmt.Printf("\tName: %s\n", cluster.Name)
 	fmt.Printf("\tNodes: %d\n", cluster.NodesCount)
@@ -17,20 +17,22 @@ func createCluster(binaryName string, cluster Cluster) (err error) {
 	fmt.Printf("\tDriver: %s\n", cluster.Config.Driver)
 	fmt.Printf("\tCIDR: %s\n", cluster.CIDR)
 
+	cmdArgs := utils.MapToString(map[string]any{
+		"--cpus":               cluster.Config.CPUsFlag,
+		"--memory":             cluster.Config.MemoryFlag,
+		"--disk-size":          cluster.Config.DiskSizeFlag,
+		"--nodes":              cluster.NodesCount,
+		"--kubernetes-version": cluster.Config.KubeConfig.KubeVersion,
+		"--extra-config=kubeadm.pod-network-cidr": cluster.CIDR,
+		"--driver": cluster.Config.Driver,
+	},
+		"=",
+	)
 	_, _, err = utils.ExecBinaryCommand(
-		binaryName,
-		// TODO: I dislike how fragile this construction is:
-		//   * It is hard to extend and read (long line)
-		//   * It is possible to make a mess by just changing args order (accidentally or intentionally)
-		fmt.Sprintf("-p %s start --cpus=%s --memory=%s --disk-size=%s --nodes=%d --kubernetes-version=%s --extra-config=kubeadm.pod-network-cidr=%s --driver=%s %s",
+		cfg.Apps.Minikube.Binary,
+		fmt.Sprintf("-p %s start %s %s",
 			cluster.Name,
-			cluster.Config.CPUsFlag,
-			cluster.Config.MemoryFlag,
-			cluster.Config.DiskSizeFlag,
-			cluster.NodesCount,
-			cluster.Config.KubeConfig.KubeVersion,
-			cluster.CIDR,
-			cluster.Config.Driver,
+			cmdArgs,
 			cluster.ExtraArgs,
 		),
 		true,
@@ -41,13 +43,13 @@ func createCluster(binaryName string, cluster Cluster) (err error) {
 	return err
 }
 
-func CreateCluster(binaryName string, cluster Cluster) error {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func CreateCluster(cluster Cluster) error {
+	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil
 	}
 
-	clusters, err := getClusters(binaryName)
+	clusters, err := getClusters()
 	if err != nil {
 		return err
 	}
@@ -57,7 +59,7 @@ func CreateCluster(binaryName string, cluster Cluster) error {
 	if existingCluster != nil {
 		fmt.Printf("Cluster %s already exists. Please use recreate command instead\n", cluster.Name)
 	} else {
-		err = createCluster(binaryName, cluster)
+		err = createCluster(cluster)
 		if err != nil {
 			return err
 		}

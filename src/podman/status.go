@@ -5,22 +5,23 @@ import (
 	"infra-lab-cli/src/utils"
 )
 
-func GetMachineStatus(binaryName, machineName string) error {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func GetMachineStatus(machineName string) error {
+	if !utils.IsBinaryInPath(cfg.Apps.Podman.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Podman.Binary))
 		return nil
 	}
 
-	machine, err := InspectMachine(binaryName, machineName)
+	machine, err := InspectMachine(machineName)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("%s\t %s\t %d cpu\t %.1f GiB\t %d GiB\n",
+	fmt.Printf("%s\t%s\t%d cpu\t%s\t%s\n",
 		machine.Name, machine.State,
 		machine.Resources.CPUs,
-		utils.ConvertMiBToGiB(machine.Resources.Memory),
-		machine.Resources.DiskSize)
+		utils.ConvertToDesiredUnit(fmt.Sprintf("%d%s", machine.Resources.Memory, "M"), "G").FloatStr,
+		utils.ConvertToDesiredUnit(fmt.Sprintf("%d%s", machine.Resources.DiskSize, "G"), "G").IntStr,
+	)
 
 	return nil
 }

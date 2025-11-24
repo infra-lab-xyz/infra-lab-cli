@@ -1,12 +1,19 @@
 package kind
 
 import (
+	"infra-lab-cli/config"
 	"infra-lab-cli/src/utils"
 )
 
-func getClusters(binaryName string) (stdout []string, err error) {
+var cfg *config.ILCConfig
+
+func init() {
+	cfg = config.GetConfig()
+}
+
+func getClusters() (stdout []string, err error) {
 	stdout, _, err = utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Kind.Binary,
 		"get clusters",
 		false,
 		false,

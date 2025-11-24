@@ -13,5 +13,5 @@ var StatusCmd = &cobra.Command{
 }
 
 func runStatus(cmd *cobra.Command, args []string) error {
-	return podmansrc.GetMachineStatus(binaryName, machineName)
+	return podmansrc.GetMachineStatus(machineName)
 }

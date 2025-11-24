@@ -13,5 +13,5 @@ var StartMachineCmd = &cobra.Command{
 }
 
 func runStartMachine(cmd *cobra.Command, args []string) error {
-	return podmansrc.StartMachine(binaryName, machineName)
+	return podmansrc.StartMachine(machineName)
 }

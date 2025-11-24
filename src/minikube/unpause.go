@@ -5,9 +5,9 @@ import (
 	"infra-lab-cli/src/utils"
 )
 
-func unpauseCluster(binaryName, clusterName string) (err error) {
+func unpauseCluster(clusterName string) (err error) {
 	_, _, err = utils.ExecBinaryCommand(
-		binaryName,
+		cfg.Apps.Minikube.Binary,
 		fmt.Sprintf("-p %s unpause", clusterName),
 		true,
 		false,
@@ -20,20 +20,20 @@ func unpauseCluster(binaryName, clusterName string) (err error) {
 	return nil
 }
 
-func UnpauseCluster(binaryName string, cluster Cluster) (err error) {
-	if !utils.IsBinaryInPath(binaryName) {
-		fmt.Print(utils.BinaryNotFoundError(binaryName))
+func UnpauseCluster(cluster Cluster) (err error) {
+	if !utils.IsBinaryInPath(cfg.Apps.Minikube.Binary) {
+		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Minikube.Binary))
 		return nil
 	}
 
-	clusters, err := getClusters(binaryName)
+	clusters, err := getClusters()
 	if err != nil {
 		return err
 	}
 	existingCluster := getClusterIfExists(cluster, clusters)
 
 	if existingCluster != nil {
-		err = unpauseCluster(binaryName, cluster.Name)
+		err = unpauseCluster(cluster.Name)
 		if err != nil {
 			return err
 		}

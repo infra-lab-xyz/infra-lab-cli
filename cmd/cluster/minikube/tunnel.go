@@ -14,5 +14,5 @@ var TunnelCmd = &cobra.Command{
 }
 
 func runTunnel(cmd *cobra.Command, args []string) error {
-	return mksrc.Tunnel(binaryName, cluster)
+	return mksrc.Tunnel(cluster)
 }

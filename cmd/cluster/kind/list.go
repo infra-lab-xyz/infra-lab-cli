@@ -14,5 +14,5 @@ var ListClustersCmd = &cobra.Command{
 }
 
 func runListClusters(cmd *cobra.Command, args []string) error {
-	return kindsrc.ListClusters(binaryName)
+	return kindsrc.ListClusters()
 }

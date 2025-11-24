@@ -13,5 +13,5 @@ var StopMachineCmd = &cobra.Command{
 }
 
 func runStopMachine(cmd *cobra.Command, args []string) error {
-	return podmansrc.StopMachine(binaryName, machineName)
+	return podmansrc.StopMachine(machineName)
 }

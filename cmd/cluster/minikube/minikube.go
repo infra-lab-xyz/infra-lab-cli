@@ -18,7 +18,7 @@ var cfg config.ILCConfig
 var binaryName string
 
 func getSupportedKubeVersions(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	kubeVersions, err := mksrc.GetSupportedKubeVersions(binaryName)
+	kubeVersions, err := mksrc.GetSupportedKubeVersions()
 	if err != nil {
 		return []string{}, cobra.ShellCompDirectiveNoFileComp
 	}
@@ -26,7 +26,7 @@ func getSupportedKubeVersions(cmd *cobra.Command, args []string, toComplete stri
 }
 
 func getSupportedDrivers(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	supportedDrivers, err := mksrc.GetSupportedDrivers(binaryName)
+	supportedDrivers, err := mksrc.GetSupportedDrivers()
 	if err != nil {
 		return []string{}, cobra.ShellCompDirectiveNoFileComp
 	}
