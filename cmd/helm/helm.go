@@ -18,6 +18,10 @@ var ociRepos helmSrc.OCIRepos
 var helmBinaryName string
 var skopeoBinaryName string
 
+var repoName string
+var repoUrl string
+var forceUpdate bool
+
 func init() {
 	cfg = *config.GetConfig()
 	ociRepos = *helmSrc.GetOCIRepos()
@@ -27,4 +31,6 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&skopeoBinaryName, "skopeo-binary", "", cfg.Apps.Skopeo.Binary, "Skopeo binary to use. Used for OCI repos")
 
 	RootCmd.AddCommand(ListReposCmd)
+	RootCmd.AddCommand(RepoAddCmd)
+	RootCmd.AddCommand(RepoDeleteCmd)
 }

@@ -28,7 +28,7 @@ func LoadOCIRepos() (err error) {
 	return nil
 }
 
-func SaveOCIRepos() (err error) {
+func SaveOCIRepos(ociRepos *OCIRepos) (err error) {
 	// TODO: check if dir exists
 	// OCIHelmRepos.Repos = append(OCIHelmRepos.Repos, HelmRepo{
 	// 	Name: "vault-secrets-webhook",
@@ -44,10 +44,10 @@ func SaveOCIRepos() (err error) {
 			fmt.Printf("Error creating project directory: %s\nWith error: %v\n", projectDir, err)
 		}
 	}
-	OCIReposConfig.Set("repos", OCIHelmRepos.Repos)
+	OCIReposConfig.Set("repos", ociRepos.Repos)
 	err = OCIReposConfig.WriteConfig()
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("%s", err)
 	}
 
 	return nil

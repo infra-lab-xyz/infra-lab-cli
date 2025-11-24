@@ -5,7 +5,7 @@ import (
 	"infra-lab-cli/src/utils"
 )
 
-func httpRepoAdd(repoName, repoUrl string, forceUpdate bool) (err error) {
+func httpRepoAddExec(repoName, repoUrl string, forceUpdate bool) (err error) {
 	args := fmt.Sprintf("repo add %s %s", repoName, repoUrl)
 	if forceUpdate {
 		args = fmt.Sprintf("%s --force-update", args)
@@ -22,20 +22,44 @@ func httpRepoAdd(repoName, repoUrl string, forceUpdate bool) (err error) {
 	return err
 }
 
-// TODO: probably not needed anymore, since I have another entrance point
-func HTTPRepoAdd(repo HelmRepo) error {
+func httpRepoAdd(repoName, repoUrl string, forceUpdate bool) (err error) {
 	if !utils.IsBinaryInPath(cfg.Apps.Helm.Binary) {
-		fmt.Print(utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
-		return nil
+		return fmt.Errorf("%s", utils.BinaryNotFoundError(cfg.Apps.Helm.Binary))
 	}
 
-	if isRepoNameExist(repo.Name) {
-		fmt.Printf("Repo %s already exists. Please use re-add command instead\n", repo.Name)
-	} else {
-		err := httpRepoAdd(repo.Name, repo.Url, false)
-		if err != nil {
-			return err
+	repo := getRepoByName(repoName)
+
+	if repo.Name != "" {
+		fmt.Printf("The repo %s\t%s already exists\n", repo.Name, repo.Url)
+		if forceUpdate {
+			fmt.Printf("The repo will be updated from: %s to: %s\n", repo.Url, repoUrl)
+
+			schema, err := parseSchema(repo.Url)
+			if err != nil {
+				return err
+			}
+
+			switch schema {
+			case "oci":
+				err = ociRepoDelete(repo.Name)
+				if err != nil {
+					return err
+				}
+			case "http", "https":
+				break
+			default:
+				return fmt.Errorf("unknown schema: %s", schema)
+			}
+
+		} else {
+			fmt.Printf("The repo exists and forceUpdate flag was not provided\n")
+			return nil
 		}
+	}
+
+	err = httpRepoAddExec(repoName, repoUrl, forceUpdate)
+	if err != nil {
+		return err
 	}
 
 	return nil
